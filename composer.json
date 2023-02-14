@@ -14,12 +14,12 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Websmurf\\LaravelExactOnline\\": "src/"
+      "Simmybit\\LaravelExactOnline\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Websmurf\\LaravelExactOnline\\Test\\": "tests"
+      "Simmybit\\LaravelExactOnline\\Test\\": "tests"
     }
   },
   "config": {
