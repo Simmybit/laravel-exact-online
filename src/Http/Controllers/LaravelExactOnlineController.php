@@ -1,11 +1,11 @@
 <?php
 
-namespace Websmurf\LaravelExactOnline\Http\Controllers;
+namespace Simmybit\LaravelExactOnline\Http\Controllers;
 
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Websmurf\LaravelExactOnline\LaravelExactOnline;
+use Simmybit\LaravelExactOnline\LaravelExactOnline;
 
 class LaravelExactOnlineController extends Controller
 {

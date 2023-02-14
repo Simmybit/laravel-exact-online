@@ -12,7 +12,7 @@ a single Exact Online user's administration.
 Require the package
 
 ```
-composer require websmurf/laravel-exact-online
+composer require simmybit/laravel-exact-online
 ```
 
 Because of the auto package discovery feature Laravel > 5.5 has, the ServiceProvider and Facades are automatically registered.
@@ -21,14 +21,14 @@ Add the Facade to your config/app.php
 
 ```
 ...
-'ExactOnline' => Websmurf\LaravelExactOnline\LaravelExactOnlineFacade::class,
+'ExactOnline' => Simmybit\LaravelExactOnline\LaravelExactOnlineFacade::class,
 ...
 ```
 
 Followed by this, publish the resources (views, config, etc.)
 
 ```
-php artisan vendor:publish --provider="Websmurf\LaravelExactOnline\Providers\LaravelExactOnlineServiceProvider"
+php artisan vendor:publish --provider="Simmybit\LaravelExactOnline\Providers\LaravelExactOnlineServiceProvider"
 ```
 
 While developing this package, you might want to use the `--force` flag on this command to overwrite previous files.
@@ -111,7 +111,7 @@ dd($account->get());
 Using Dependency Injection, you can request an instance that already creates connection instance for you:
 
 ```php
-function handle (\Websmurf\LaravelExactOnline\LaravelExactOnline $exactOnline) {
+function handle (\Simmybit\LaravelExactOnline\LaravelExactOnline $exactOnline) {
     // List all accounts
     $exactOnline->Account()->get();
 
