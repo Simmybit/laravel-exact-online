@@ -12,12 +12,6 @@
     "squizlabs/php_codesniffer": "^3.6"
   },
   "license": "MIT",
-  "authors": [
-    {
-      "name": "Simon Hiemstra",
-      "email": "simon.hiemstra@mybit.nl"
-    }
-  ],
   "autoload": {
     "psr-4": {
       "Websmurf\\LaravelExactOnline\\": "src/"
