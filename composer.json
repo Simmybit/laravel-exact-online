@@ -1,5 +1,5 @@
 {
-  "name": "websmurf/laravel-exact-online",
+  "name": "simmybit/laravel-exact-online",
   "description": "Laravel Facade wrapper for Exact Online PHP API",
   "require": {
     "picqer/exact-php-client": "^3.1",
@@ -12,24 +12,14 @@
     "squizlabs/php_codesniffer": "^3.6"
   },
   "license": "MIT",
-  "authors": [
-    {
-      "name": "Adam van Dongen",
-      "email": "adam@bandhosting.nl"
-    },
-    {
-      "name": "Joshua de Gier",
-      "email": "info@pendo.nl"
-    }
-  ],
   "autoload": {
     "psr-4": {
-      "Websmurf\\LaravelExactOnline\\": "src/"
+      "Simmybit\\LaravelExactOnline\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Websmurf\\LaravelExactOnline\\Test\\": "tests"
+      "Simmybit\\LaravelExactOnline\\Test\\": "tests"
     }
   },
   "config": {
@@ -43,10 +33,10 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Websmurf\\LaravelExactOnline\\Providers\\LaravelExactOnlineServiceProvider"
+        "Simmybit\\LaravelExactOnline\\Providers\\LaravelExactOnlineServiceProvider"
       ],
       "aliases": {
-        "ExactOnline": "Websmurf\\LaravelExactOnline\\LaravelExactOnlineFacade"
+        "ExactOnline": "Simmybit\\LaravelExactOnline\\LaravelExactOnlineFacade"
       }
     }
   }
