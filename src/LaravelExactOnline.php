@@ -409,6 +409,10 @@ class LaravelExactOnline
      */
     public static function loadConfig()
     {
+        if (config('laravel-exact-online.exact_application_mode')) {
+            return App\Models\ExactApplication::where('tld', get_tld_from_url(request()->url()));
+        }
+
         if (config('laravel-exact-online.exact_multi_user')) {
             return Auth::user();
         }
@@ -431,7 +435,7 @@ class LaravelExactOnline
      */
     public static function storeConfig($config): void
     {
-        if (config('laravel-exact-online.exact_multi_user')) {
+        if (config('laravel-exact-online.exact_multi_user') || config('laravel-exact-online.exact_application_mode')) {
             $config->save();
             return;
         }
