@@ -2,6 +2,7 @@
 
 namespace Simmybit\LaravelExactOnline;
 
+use App\Models\ExactApplication;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Cache\Lock;
 use Illuminate\Contracts\Cache\LockProvider;
@@ -333,7 +334,7 @@ class LaravelExactOnline
      */
     public function connection(): Connection
     {
-        if (! $this->connection) {
+        if (!$this->connection) {
             $this->connection = app()->make('Exact\Connection');
         }
         return $this->connection;
@@ -384,7 +385,7 @@ class LaravelExactOnline
         $cache = app()->make(Repository::class);
         $store = $cache->getStore();
 
-        if (! $store instanceof LockProvider) {
+        if (!$store instanceof LockProvider) {
             return false;
         }
 
@@ -413,6 +414,10 @@ class LaravelExactOnline
             return Auth::user();
         }
 
+        if (config('laravel-exact-online.exact_application_mode')) {
+            return ExactApplication::first();
+        }
+
         $config = '{}';
 
         if (Storage::exists('exact.api.json')) {
@@ -421,7 +426,7 @@ class LaravelExactOnline
             );
         }
 
-        return (object) json_decode($config, false);
+        return (object)json_decode($config, false);
     }
 
     /**
@@ -431,7 +436,8 @@ class LaravelExactOnline
      */
     public static function storeConfig($config): void
     {
-        if (config('laravel-exact-online.exact_multi_user')) {
+        if (config('laravel-exact-online.exact_multi_user') ||
+            config('laravel-exact-online.exact_application_mode')) {
             $config->save();
             return;
         }
@@ -449,7 +455,7 @@ class LaravelExactOnline
      *
      * @throws RuntimeException Throws a RuntimeException when the provided method does not exist.
      */
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments)
     {
         if (strpos($method, "connection") === 0) {
             $method = lcfirst(substr($method, 10));

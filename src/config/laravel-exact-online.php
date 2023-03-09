@@ -26,4 +26,9 @@ return [
      * The Client country code
      */
     'exact_multi_user' => env('EXACT_MULTI_USER', false),
+
+    /**
+     * Using exact applications instead of user/file
+     */
+    'exact_application_mode' => env('EXACT_APPLICATION_MODE', false)
 ];
