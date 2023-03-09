@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Picqer\Financials\Exact\Connection;
 use RuntimeException;
+use Simmybit\LaravelExactOnline\Models\ExactApplication;
 use stdClass;
 use function json_decode;
 use function json_encode;
@@ -410,7 +411,8 @@ class LaravelExactOnline
     public static function loadConfig()
     {
         if (config('laravel-exact-online.exact_application_mode')) {
-            return App\Models\ExactApplication::where('tld', get_tld_from_url(request()->url()));
+            return ExactApplication::where('tld',
+                get_tld_from_url(request()->url()));
         }
 
         if (config('laravel-exact-online.exact_multi_user')) {
