@@ -21,10 +21,10 @@ return new class extends Migration
             $table->string('client_secret');
             $table->string('webhook_secret');
             $table->string('division');
-            $table->string('access_token')->nullable();
-            $table->string('refresh_token')->nullable();
-            $table->string('token_expires')->nullable();
-            $table->string('authorisation_code')->nullable();
+            $table->string('exact_accessToken')->nullable();
+            $table->string('exact_refreshToken')->nullable();
+            $table->string('exact_tokenExpires')->nullable();
+            $table->string('exact_authorisationCode')->nullable();
             $table->date('enabled_at')->nullable();
             $table->timestamps();
         });

@@ -406,13 +406,13 @@ class LaravelExactOnline
     /**
      * Load existing configuration.
      *
-     * @return Authenticatable|stdClass
+     * @return Authenticatable|ExactApplication|stdClass
      */
     public static function loadConfig()
     {
         if (config('laravel-exact-online.exact_application_mode')) {
             return ExactApplication::where('tld',
-                get_tld_from_url(request()->url()));
+                get_tld_from_url(request()->url()))->first();
         }
 
         if (config('laravel-exact-online.exact_multi_user')) {

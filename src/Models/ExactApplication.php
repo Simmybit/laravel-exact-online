@@ -10,9 +10,9 @@ class ExactApplication extends Model
         'client_id',
         'client_secret',
         'webhook_secret',
-        'access_token',
-        'refresh_token',
-        'token_expires',
-        'authorisation_code'
+        'exact_accessToken',
+        'exact_refreshToken',
+        'exact_tokenExpires',
+        'exact_authorisationCode'
     ];
 }
