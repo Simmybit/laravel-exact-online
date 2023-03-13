@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 use Picqer\Financials\Exact\Connection;
 use RuntimeException;
 use Simmybit\LaravelExactOnline\Models\ExactApplication;
+use Pdp\Domain;
+use Pdp\Rules;
 use stdClass;
 use function json_decode;
 use function json_encode;
@@ -408,11 +410,11 @@ class LaravelExactOnline
      *
      * @return Authenticatable|ExactApplication|stdClass
      */
-    public static function loadConfig()
+    public static function loadConfig($tld = null)
     {
         if (config('laravel-exact-online.exact_application_mode')) {
-            return ExactApplication::where('tld',
-                get_tld_from_url(request()->url()))->first();
+            $tld = $tld ?: self::getTldFromUrl(request()->url());
+            return ExactApplication::where('tld', $tld)->first();
         }
 
         if (config('laravel-exact-online.exact_multi_user')) {
@@ -475,5 +477,12 @@ class LaravelExactOnline
         $attributes = count($arguments) !== 0 ? $arguments[0] : [];
 
         return new $classname($this->connection(), $attributes);
+    }
+
+    private static function getTldFromUrl(string $url): string
+    {
+        $rules = Rules::fromPath(Storage::path('public_suffix_list.dat'));
+        $result = $rules->resolve(Domain::fromIDNA2008(parse_url($url, PHP_URL_HOST)));
+        return $result->suffix()->toString();
     }
 }
