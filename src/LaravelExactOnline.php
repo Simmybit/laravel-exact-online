@@ -410,11 +410,17 @@ class LaravelExactOnline
      *
      * @return Authenticatable|ExactApplication|stdClass
      */
-    public static function loadConfig($tld = null)
+    public static function loadConfig($tld = null, $division = null)
     {
         if (config('laravel-exact-online.exact_application_mode')) {
             $tld = $tld ?: self::getTldFromUrl(request()->url());
-            return ExactApplication::where('tld', $tld)->first();
+            $builder = ExactApplication::where('tld', $tld);
+
+            if ($division) {
+                $builder->where('division', $division);
+            }
+
+            return $builder->first();
         }
 
         if (config('laravel-exact-online.exact_multi_user')) {
