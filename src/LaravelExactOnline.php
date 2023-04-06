@@ -448,12 +448,12 @@ class LaravelExactOnline
         Storage::put('exact.api.json', json_encode($config));
     }
 
-    private static function getTldFromConnection(Connection $connection): string
+    public static function getTldFromConnection(Connection $connection): string
     {
         return substr($connection->getAuthUrl(), 26, 2);
     }
 
-    private static function getTldFromUrl(string $url): string
+    public static function getTldFromUrl(string $url): string
     {
         $rules = Rules::fromPath(Storage::path('public_suffix_list.dat'));
         $result = $rules->resolve(Domain::fromIDNA2008(parse_url($url, PHP_URL_HOST)));
