@@ -8,11 +8,11 @@ use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Pdp\Domain;
+use Pdp\Rules;
 use Picqer\Financials\Exact\Connection;
 use RuntimeException;
 use Simmybit\LaravelExactOnline\Models\ExactApplication;
-use Pdp\Domain;
-use Pdp\Rules;
 use stdClass;
 use function json_decode;
 use function json_encode;
@@ -349,7 +349,7 @@ class LaravelExactOnline
      */
     public static function tokenUpdateCallback(Connection $connection): void
     {
-        $config = self::loadConfig();
+        $config = LaravelExactOnline::loadConfig(self::getTldFromConnection($connection));
 
         $config->exact_accessToken = serialize($connection->getAccessToken());
         $config->exact_refreshToken = $connection->getRefreshToken();
@@ -365,7 +365,7 @@ class LaravelExactOnline
      */
     public static function tokenRefreshCallback(Connection $connection): void
     {
-        $config = self::loadConfig();
+        $config = LaravelExactOnline::loadConfig(self::getTldFromConnection($connection));
 
         if (isset($config->exact_accessToken)) {
             $connection->setAccessToken(unserialize($config->exact_accessToken));
@@ -405,12 +405,7 @@ class LaravelExactOnline
         return optional(self::$lock)->release();
     }
 
-    /**
-     * Load existing configuration.
-     *
-     * @return Authenticatable|ExactApplication|stdClass
-     */
-    public static function loadConfig($tld = null, $division = null)
+    public static function loadConfig(string|null $tld = null, string|null $division = null): Authenticatable|ExactApplication|stdClass
     {
         if (config('laravel-exact-online.exact_application_mode')) {
             $tld = $tld ?: self::getTldFromUrl(request()->url());
@@ -453,6 +448,18 @@ class LaravelExactOnline
         Storage::put('exact.api.json', json_encode($config));
     }
 
+    private static function getTldFromConnection(Connection $connection): string
+    {
+        return substr($connection->getAuthUrl(), 26, 2);
+    }
+
+    private static function getTldFromUrl(string $url): string
+    {
+        $rules = Rules::fromPath(Storage::path('public_suffix_list.dat'));
+        $result = $rules->resolve(Domain::fromIDNA2008(parse_url($url, PHP_URL_HOST)));
+        return $result->suffix()->toString();
+    }
+
     /**
      * Magically calls methods from Picqer Exact Online API
      *
@@ -483,12 +490,5 @@ class LaravelExactOnline
         $attributes = count($arguments) !== 0 ? $arguments[0] : [];
 
         return new $classname($this->connection(), $attributes);
-    }
-
-    private static function getTldFromUrl(string $url): string
-    {
-        $rules = Rules::fromPath(Storage::path('public_suffix_list.dat'));
-        $result = $rules->resolve(Domain::fromIDNA2008(parse_url($url, PHP_URL_HOST)));
-        return $result->suffix()->toString();
     }
 }
