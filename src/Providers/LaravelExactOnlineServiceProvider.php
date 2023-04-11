@@ -17,9 +17,11 @@ class LaravelExactOnlineServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__ . '/../views', 'laravelexactonline');
 
+        // TODO Replace/Remove connect pages
         $this->publishes([
             __DIR__ . '/../views' => base_path('resources/views/vendor/laravelexactonline'),
             __DIR__ . '/../exact.api.json' => storage_path('exact.api.json'),
+            __DIR__ . '/../public_suffix_list.dat' => storage_path('public_suffix_list.dat'),
             __DIR__ . '/../config/laravel-exact-online.php' => config_path('laravel-exact-online.php'),
         ]);
     }

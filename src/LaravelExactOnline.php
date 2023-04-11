@@ -8,8 +8,11 @@ use Illuminate\Contracts\Cache\LockProvider;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Pdp\Domain;
+use Pdp\Rules;
 use Picqer\Financials\Exact\Connection;
 use RuntimeException;
+use Simmybit\LaravelExactOnline\Models\ExactApplication;
 use stdClass;
 use function json_decode;
 use function json_encode;
@@ -346,7 +349,7 @@ class LaravelExactOnline
      */
     public static function tokenUpdateCallback(Connection $connection): void
     {
-        $config = self::loadConfig();
+        $config = LaravelExactOnline::loadConfig(self::getTldFromConnection($connection));
 
         $config->exact_accessToken = serialize($connection->getAccessToken());
         $config->exact_refreshToken = $connection->getRefreshToken();
@@ -362,7 +365,7 @@ class LaravelExactOnline
      */
     public static function tokenRefreshCallback(Connection $connection): void
     {
-        $config = self::loadConfig();
+        $config = LaravelExactOnline::loadConfig(self::getTldFromConnection($connection));
 
         if (isset($config->exact_accessToken)) {
             $connection->setAccessToken(unserialize($config->exact_accessToken));
@@ -402,13 +405,19 @@ class LaravelExactOnline
         return optional(self::$lock)->release();
     }
 
-    /**
-     * Load existing configuration.
-     *
-     * @return Authenticatable|stdClass
-     */
-    public static function loadConfig()
+    public static function loadConfig(string|null $tld = null, string|null $division = null): Authenticatable|ExactApplication|stdClass
     {
+        if (config('laravel-exact-online.exact_application_mode')) {
+            $tld = $tld ?: self::getTldFromUrl(request()->url());
+            $builder = ExactApplication::where('tld', $tld);
+
+            if ($division) {
+                $builder->where('division', $division);
+            }
+
+            return $builder->first();
+        }
+
         if (config('laravel-exact-online.exact_multi_user')) {
             return Auth::user();
         }
@@ -431,12 +440,24 @@ class LaravelExactOnline
      */
     public static function storeConfig($config): void
     {
-        if (config('laravel-exact-online.exact_multi_user')) {
+        if (config('laravel-exact-online.exact_multi_user') || config('laravel-exact-online.exact_application_mode')) {
             $config->save();
             return;
         }
 
         Storage::put('exact.api.json', json_encode($config));
+    }
+
+    public static function getTldFromConnection(Connection $connection): string
+    {
+        return substr($connection->getAuthUrl(), 26, 2);
+    }
+
+    public static function getTldFromUrl(string $url): string
+    {
+        $rules = Rules::fromPath(Storage::path('public_suffix_list.dat'));
+        $result = $rules->resolve(Domain::fromIDNA2008(parse_url($url, PHP_URL_HOST)));
+        return $result->suffix()->toString();
     }
 
     /**

@@ -26,4 +26,9 @@ return [
      * The Client country code
      */
     'exact_multi_user' => env('EXACT_MULTI_USER', false),
+
+    /**
+     * Database table exact_applications instead of user/file tokens
+     */
+    'exact_application_mode' => env('EXACT_APPLICATION_MODE', false),
 ];

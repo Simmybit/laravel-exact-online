@@ -37,6 +37,9 @@ class LaravelExactOnlineController extends Controller
      */
     public function appCallback()
     {
+        // Called from exact.callback route
+        // Has to be overloaded in exact applications mode
+
         $config = LaravelExactOnline::loadConfig();
         $config->exact_authorisationCode = request()->get('code');
 
